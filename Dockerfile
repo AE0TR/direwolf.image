@@ -8,18 +8,16 @@ RUN cd direwolf/build && make -j4
 RUN cd direwolf/build && make install
 RUN cd direwolf/build && make install-conf
 
-FROM debian:buster
+FROM debian:buster-slim
 
 WORKDIR /data
 
-RUN apt update && apt install -y libasound2 libudev1 vim alsa-utils
+RUN apt update && apt install -y libasound2 libudev1 
 
 COPY --from=build /usr/local/bin/ /usr/local/bin/
-COPY --from=build /usr/local/share/doc/direwolf/ /usr/local/share/doc/direwolf/
 COPY --from=build /etc/udev/rules.d/99-direwolf-cmedia.rules /etc/udev/rules.d/99-direwolf-cmedia.rules
-COPY --from=build /root/direwolf.conf /data/direwolf.conf
-COPY --from=build /usr/local/share/man/man1/ /usr/local/share/man/man1/
 COPY --from=build /usr/local/share/direwolf/ /usr/local/share/direwolf/
+COPY direwolf.conf.example /data/direwolf.conf
 
 EXPOSE 8000
 EXPOSE 8001
